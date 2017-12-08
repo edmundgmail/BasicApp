@@ -1,5 +1,6 @@
 package gwt.com.basicapp;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,12 @@ import android.widget.ToggleButton;
 
 public class ReportLocationActivity extends AppCompatActivity {
     private String mbusId;
+    private static final String[] INITIAL_PERMS={
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+
+    private static final int INITIAL_REQUEST=1337;
 
 
     private boolean hasPermission(String perm) {
@@ -31,12 +38,24 @@ public class ReportLocationActivity extends AppCompatActivity {
         this.stopService(intent);
     }
 
+    private boolean canAccessLocation() {
+        return(hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) &&
+                hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION));
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!canAccessLocation()) {
+            requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
+        }
+
         setContentView(R.layout.activity_report_location);
 
         mbusId = getIntent().getStringExtra("BUS_ID");
+
 
         startService();
         final ToggleButton toggleButton = (ToggleButton) findViewById(R.id.toggleButton);

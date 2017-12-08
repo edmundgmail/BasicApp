@@ -1,19 +1,23 @@
 package gwt.com.basicapp;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import static gwt.com.basicapp.ReportLocationService.TAG;
+
 public class ReportLocationService extends Service {
-    private String TAG = "REPORTLOCATIONSERVICE";
+    public static final String TAG = "REPORTLOCATIONSERVICE";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 10f;
+    private static final int LOCATION_INTERVAL = 10000;
+    private static final float LOCATION_DISTANCE = 0f;
 
 
     public ReportLocationService() {
@@ -33,10 +37,19 @@ public class ReportLocationService extends Service {
         return START_STICKY;
     }
 
+    LocationListener[] mLocationListeners = new LocationListener[] {
+            new LocationListener(LocationManager.GPS_PROVIDER),
+            new LocationListener(LocationManager.NETWORK_PROVIDER)
+    };
+
+
     @Override
     public void onCreate()
     {
         Log.e(TAG, "onCreate");
+
+
+
         initializeLocationManager();
         try {
             mLocationManager.requestLocationUpdates(
@@ -117,9 +130,5 @@ public class ReportLocationService extends Service {
         }
     }
 
-    LocationListener[] mLocationListeners = new LocationListener[] {
-            new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
-    };
 
 }
