@@ -6,24 +6,22 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class ReportLocationService extends Service {
-
     private String TAG = this.getClass().getName();
+
     public ReportLocationService() {
     }
+
 
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
-        //throw new UnsupportedOperationException("Not yet implemented");
-        Log.i(TAG, "onBind success");
-        
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
-    public boolean onUnbind(Intent intent) {
-        //throw new RuntimeException("Stub!");
-        Log.i(TAG, "onUnbind success");
-        return true;
+    public void onDestroy() {
+        super.onDestroy();
+        Log.v(TAG, "in onDestroy");
     }
 
     @Override

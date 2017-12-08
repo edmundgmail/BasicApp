@@ -1,7 +1,11 @@
 package gwt.com.basicapp;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ToggleButton;
@@ -34,10 +38,10 @@ public class ReportLocationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 if(toggleButton.isChecked()){
-                    stopService();
+                    startService();
                 }
                 else{
-                    startService();
+                    stopService();
                 }
             }
         });
