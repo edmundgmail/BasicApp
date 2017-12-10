@@ -118,9 +118,8 @@ public class ReportLocationService extends Service {
         {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
-            final DatabaseReference childRef = myRef.push();
-
-            childRef.child("locatation").setValue("location1", new DatabaseReference.CompletionListener() {
+            final DatabaseReference childRef = myRef;
+            childRef.child("locatation").setValue(location, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
                     if (databaseError != null) {
