@@ -11,12 +11,20 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import static gwt.com.basicapp.ReportLocationService.TAG;
 
 public class ReportLocationService extends Service {
     public static final String TAG = "REPORTLOCATIONSERVICE";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 10000;
+    private static final int LOCATION_INTERVAL = 5000;
     private static final float LOCATION_DISTANCE = 0f;
 
 
@@ -47,8 +55,6 @@ public class ReportLocationService extends Service {
     public void onCreate()
     {
         Log.e(TAG, "onCreate");
-
-
 
         initializeLocationManager();
         try {
@@ -98,10 +104,13 @@ public class ReportLocationService extends Service {
     {
         Location mLastLocation;
 
+        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("todoItems").child("abc");
+
         public LocationListener(String provider)
         {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
+            //myRef.setValue(mLastLocation);
         }
 
         @Override
@@ -109,6 +118,16 @@ public class ReportLocationService extends Service {
         {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
+            final DatabaseReference childRef = myRef.push();
+
+            childRef.child("locatation").setValue("location1", new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
+                    if (databaseError != null) {
+                        Log.e(TAG, "Failed to write message", databaseError.toException());
+                    }
+                }
+            });
         }
 
         @Override

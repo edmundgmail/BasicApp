@@ -1,0 +1,18 @@
+[eguo@localhost BasicApp]$ keytool -exportcert -list -v -alias androiddebugkey -keystore ~/.android/debug.keystore
+Enter keystore password:  
+Alias name: androiddebugkey
+Creation date: Dec 4, 2017
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: C=US, O=Android, CN=Android Debug
+Issuer: C=US, O=Android, CN=Android Debug
+Serial number: 1
+Valid from: Mon Dec 04 21:33:08 EST 2017 until: Wed Nov 27 21:33:08 EST 2047
+Certificate fingerprints:
+	 MD5:  FC:BF:1C:F2:C4:C6:18:F7:DE:CA:6D:C6:DD:72:FA:D7
+	 SHA1: 6C:21:B7:DB:B9:DB:D3:3C:DA:6B:38:0B:C0:6A:FA:89:BF:3F:F3:EE
+	 SHA256: 36:F9:DE:DE:C4:E9:C4:B6:EB:33:76:9A:FD:11:20:2E:DB:86:42:7F:55:1A:D6:E9:B6:84:62:F1:50:4E:3D:93
+	 Signature algorithm name: SHA1withRSA
+	 Version: 1
+
