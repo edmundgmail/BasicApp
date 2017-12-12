@@ -12,19 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ToggleButton;
 
+import java.security.Permission;
+
+import static gwt.com.basicapp.PermissionControl.INITIAL_REQUEST;
+
 public class ReportLocationActivity extends AppCompatActivity {
     private String mbusId;
-    private static final String[] INITIAL_PERMS={
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
-    };
-
-    private static final int INITIAL_REQUEST=1337;
-
-
-    private boolean hasPermission(String perm) {
-        return(PackageManager.PERMISSION_GRANTED==checkSelfPermission(perm));
-    }
 
     private void startService(){
         Intent intent = new Intent(this, ReportLocationService.class);
@@ -38,9 +31,21 @@ public class ReportLocationActivity extends AppCompatActivity {
         this.stopService(intent);
     }
 
+    private boolean hasPermission(String perm)
+    {
+        return(PackageManager.PERMISSION_GRANTED==checkSelfPermission(perm));
+    }
+
+
     private boolean canAccessLocation() {
-        return(hasPermission(Manifest.permission.ACCESS_FINE_LOCATION) &&
+        return(hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) &&
                 hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION));
+    }
+
+    private void checkPermission() {
+        if (!canAccessLocation()) {
+            requestPermissions(PermissionControl.INITIAL_PERMS, INITIAL_REQUEST);
+        }
     }
 
 
@@ -48,10 +53,7 @@ public class ReportLocationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!canAccessLocation()) {
-            requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
-        }
-
+        checkPermission();
         setContentView(R.layout.activity_report_location);
 
         mbusId = getIntent().getStringExtra("BUS_ID");

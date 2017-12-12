@@ -347,7 +347,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
                 else
                 {
-                    Intent i = new Intent(getApplicationContext(), TrackBusLocationActivity.class);
+                    Intent i = new Intent(getApplicationContext(), TrackLocationActivity.class);
                     startActivity(i);
                 }
 

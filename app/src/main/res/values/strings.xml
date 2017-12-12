@@ -18,4 +18,5 @@
     <string name="title_activity_track_bus_location">TrackBusLocationActivity</string>
     <string name="toggle_turn_on">Reporting...Click to stop</string>
     <string name="toggle_turn_off">Stopped...Click to start reporting</string>
+    <string name="title_activity_track_location">Map</string>
 </resources>
