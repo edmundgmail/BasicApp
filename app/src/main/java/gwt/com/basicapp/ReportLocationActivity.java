@@ -16,7 +16,7 @@ import java.security.Permission;
 
 import static gwt.com.basicapp.PermissionControl.INITIAL_REQUEST;
 
-public class ReportLocationActivity extends AppCompatActivity {
+public class ReportLocationActivity extends PermissionControl {
     private String mbusId;
 
     private void startService(){
@@ -30,24 +30,6 @@ public class ReportLocationActivity extends AppCompatActivity {
         intent.putExtra("BUS_ID", mbusId);
         this.stopService(intent);
     }
-
-    private boolean hasPermission(String perm)
-    {
-        return(PackageManager.PERMISSION_GRANTED==checkSelfPermission(perm));
-    }
-
-
-    private boolean canAccessLocation() {
-        return(hasPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) &&
-                hasPermission(Manifest.permission.ACCESS_COARSE_LOCATION));
-    }
-
-    private void checkPermission() {
-        if (!canAccessLocation()) {
-            requestPermissions(PermissionControl.INITIAL_PERMS, INITIAL_REQUEST);
-        }
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

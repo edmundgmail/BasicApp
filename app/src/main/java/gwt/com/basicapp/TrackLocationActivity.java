@@ -2,20 +2,30 @@ package gwt.com.basicapp;
 
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class TrackLocationActivity extends FragmentActivity implements OnMapReadyCallback {
+public class TrackLocationActivity extends PermissionControl implements OnMapReadyCallback {
 
     private GoogleMap googleMap;
+    private Marker myMarker;
+    private boolean isMarkerRotating = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +37,80 @@ public class TrackLocationActivity extends FragmentActivity implements OnMapRead
         mapFragment.getMapAsync(this);
     }
 
-    protected boolean hasPermission(String perm)
-    {
-        return(PackageManager.PERMISSION_GRANTED==checkSelfPermission(perm));
+    private double bearingBetweenLocations(LatLng latLng1,LatLng latLng2) {
+
+        double PI = 3.14159;
+        double lat1 = latLng1.latitude * PI / 180;
+        double long1 = latLng1.longitude * PI / 180;
+        double lat2 = latLng2.latitude * PI / 180;
+        double long2 = latLng2.longitude * PI / 180;
+
+        double dLon = (long2 - long1);
+
+        double y = Math.sin(dLon) * Math.cos(lat2);
+        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1)
+                * Math.cos(lat2) * Math.cos(dLon);
+
+        double brng = Math.atan2(y, x);
+
+        brng = Math.toDegrees(brng);
+        brng = (brng + 360) % 360;
+
+        return brng;
     }
 
-    private moveCar() {
-        final LatLng SomePos = new LatLng(12.7796354, 77.4159606);
+    private void rotateMarker(final Marker marker, final float toRotation) {
+        if(!isMarkerRotating) {
+            final Handler handler = new Handler();
+            final long start = SystemClock.uptimeMillis();
+            final float startRotation = marker.getRotation();
+            final long duration = 5000;
+
+            final Interpolator interpolator = new LinearInterpolator();
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    isMarkerRotating = true;
+
+                    long elapsed = SystemClock.uptimeMillis() - start;
+                    float t = interpolator.getInterpolation((float) elapsed / duration);
+
+                    float rot = t * toRotation + (1 - t) * startRotation;
+
+                    marker.setRotation(-rot > 180 ? rot / 2 : rot);
+                    if (t < 1.0) {
+                        // Post again 16ms later.
+                        handler.postDelayed(this, 16);
+                    } else {
+                        isMarkerRotating = false;
+                    }
+                }
+            });
+        }
+    }
+
+    private void show() {
+
+        LatLng[] locs = {
+                new LatLng(18.4560183333, 73.8247583333),
+                new LatLng(18.4537883333, 73.8249266667),
+                new LatLng(18.4547783333, 73.8247633333),
+                new LatLng(18.4534366667, 73.8220883333)
+        };
+
+        for(LatLng lat: locs) {
+            moveCar(lat);
+            try {
+                Thread.sleep(2000);
+            }catch (Exception e){
+
+            }
+        }
+    }
+    private void moveCar(LatLng SomePos) {
+
+        checkPermission();
 
         try {
             googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -50,7 +127,7 @@ public class TrackLocationActivity extends FragmentActivity implements OnMapRead
                     .tilt(45)
                     .build()));
 
-            myMarker = googleMap.addMarker(new MarkerOptions()
+            this.myMarker = googleMap.addMarker(new MarkerOptions()
                     .position(SomePos)
                     .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher))
                     .title("Hello world"));
@@ -123,11 +200,12 @@ public class TrackLocationActivity extends FragmentActivity implements OnMapRead
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap = googleMap;
+        this.googleMap = googleMap;
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
         googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        show();
     }
 }
