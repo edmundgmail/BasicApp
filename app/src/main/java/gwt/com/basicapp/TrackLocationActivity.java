@@ -2,6 +2,10 @@ package gwt.com.basicapp;
 
 import android.animation.ValueAnimator;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -31,6 +35,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
 
 public class TrackLocationActivity extends PermissionControl implements OnMapReadyCallback,
@@ -38,16 +46,38 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
         GoogleApiClient.OnConnectionFailedListener {
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private static final int REQUEST_LOCATION = 0;
-    private Location mLastLocation;
-    // Google client to interact with Google API
-    private GoogleApiClient mGoogleApiClient;
-    // boolean flag to toggle periodic location updates
+    private SimpleLocation mLastLocation;
     private boolean mRequestingLocationUpdates = false;
     //private LocationRequest mLocationRequest;
     private static final String TAG = "";
     private GoogleMap mMap;
     private int markerCount;
 
+
+    private void startService(){
+        Intent intent = new Intent(this, ReportLocationService.class);
+        this.startService(intent);
+        this.registerReceiver(mMessageReceiver, new IntentFilter("unique_name"));
+    }
+
+    private void stopService() {
+        Intent intent = new Intent(this, ReportLocationService.class);
+        this.unregisterReceiver(mMessageReceiver);
+        this.stopService(intent);
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            double lat = intent.getDoubleExtra("lat", 0);
+            double lon = intent.getDoubleExtra("lon", 0);
+            float bear = intent.getFloatExtra("bear", 0);
+
+            Log.d(TAG, "lat=" + lat + "lon=" + lon + "bear=" + bear);
+            onLocationChanged(new SimpleLocation(lat, lon, bear));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +110,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
 
         mMap = googleMap;
         checkPermission();
+        startService();
         //Uncomment To Show Google Location Blue Pointer
         // mMap.setMyLocationEnabled(true);
     }
@@ -147,10 +178,6 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     @Override
     protected void onStart() {
         super.onStart();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-//        startLocationUpdates();
     }
 
     @Override
@@ -158,24 +185,20 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
         super.onResume();
 
         getServicesAvailable();
+        startService();
 
-        // Resuming the periodic location updates
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
+        stopService();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        startService();
     }
 
     //Method to display the location on UI
@@ -232,11 +255,11 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
 
     @Override
     public void onConnectionSuspended(int arg0) {
-        mGoogleApiClient.connect();
+
     }
 
 
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(SimpleLocation location) {
         // Assign the new location
         mLastLocation = location;
 
@@ -248,7 +271,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     }
 
 
-    public static void animateMarker(final Location destination, final Marker marker) {
+    public static void animateMarker(final SimpleLocation destination, final Marker marker) {
         if (marker != null) {
             final LatLng startPosition = marker.getPosition();
             final LatLng endPosition = new LatLng(destination.getLatitude(), destination.getLongitude());
