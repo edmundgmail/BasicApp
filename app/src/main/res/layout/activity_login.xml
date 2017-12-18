@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="gwt.com.basicapp.LoginActivity">
+    tools:context="gwt.com.basicapp.GoogleSignInActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -66,6 +66,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/chk_driver"
+                    android:checked="false" />
+
+                <CheckBox
+                    android:id="@+id/chkRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New user registration"
                     android:checked="false" />
 
             </android.support.design.widget.TextInputLayout>

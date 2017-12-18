@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import static gwt.com.basicapp.ReportLocationService.TAG;
 
@@ -26,7 +27,9 @@ public class ReportLocationService extends Service {
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 5000;
     private static final float LOCATION_DISTANCE = 0f;
-
+    private String mBusId;
+    private String mDriver;
+    DatabaseReference locationRef;
 
     public ReportLocationService() {
     }
@@ -41,6 +44,11 @@ public class ReportLocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         Log.e(TAG, "onStartCommand");
+        if(mBusId == null){
+            mDriver = intent.getStringExtra("driver");
+        }
+
+
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
@@ -55,7 +63,6 @@ public class ReportLocationService extends Service {
     public void onCreate()
     {
         Log.e(TAG, "onCreate");
-
         initializeLocationManager();
         try {
             mLocationManager.requestLocationUpdates(
@@ -104,7 +111,7 @@ public class ReportLocationService extends Service {
     {
         Location mLastLocation;
 
-        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("todoItems").child("abc");
+        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("bus");
 
         public LocationListener(String provider)
         {
@@ -119,7 +126,7 @@ public class ReportLocationService extends Service {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
             final DatabaseReference childRef = myRef;
-            childRef.child("locatation").setValue(location, new DatabaseReference.CompletionListener() {
+            childRef.child("location").setValue(location, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
                     if (databaseError != null) {

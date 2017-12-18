@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +32,15 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +51,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    private static String TAG = "LoginActivity";
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -61,7 +72,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
-    private CheckBox mCheckboxView;
+    private CheckBox mDriverCheckBoxView;
+    private CheckBox mRegisterCheckBoxView;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -85,7 +97,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        mCheckboxView = (CheckBox) findViewById(R.id.chkDriver);
+        mDriverCheckBoxView = (CheckBox) findViewById(R.id.chkDriver);
+        mRegisterCheckBoxView = (CheckBox) findViewById(R.id.chkRegister);
+
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -156,12 +170,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
-        mCheckboxView.setError(null);
+        mDriverCheckBoxView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-        boolean driver = mCheckboxView.isChecked();
+        boolean driver = mDriverCheckBoxView.isChecked();
+        boolean register = mRegisterCheckBoxView.isChecked();
         boolean cancel = false;
         View focusView = null;
 
@@ -191,7 +206,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, driver);
+            mAuthTask = new UserLoginTask(email, password, driver, register);
             mAuthTask.execute((Void) null);
         }
     }
@@ -305,33 +320,49 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mEmail;
         private final String mPassword;
         private final boolean mDriver;
+        private final boolean mRegister;
+        private FirebaseAuth mAuth;
 
-        UserLoginTask(String email, String password, boolean driver) {
+        UserLoginTask(String email, String password, boolean driver, boolean register) {
+            mAuth = FirebaseAuth.getInstance();
             mEmail = email;
             mPassword = password;
             mDriver = driver;
+            mRegister = register;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+            if(mRegister){
+                mAuth.createUserWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(
+                        new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
+                            try {
+                                throw task.getException();
+                            } catch(FirebaseAuthWeakPasswordException e) {
+                                mPasswordView.setError(getString(R.string.error_invalid_password));
+                                mPasswordView.requestFocus();
+                            } catch(FirebaseAuthInvalidCredentialsException e) {
+                                mEmailView.setError(getString(R.string.error_invalid_email));
+                                mEmailView.requestFocus();
+                            } catch(FirebaseAuthUserCollisionException e) {
+                                mEmailView.setError(getString(R.string.error_email_exists));
+                                mEmailView.requestFocus();
+                            } catch(Exception e) {
+                                Log.e(TAG, e.getMessage());
+                            }
+                        }
+                        else {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String uid = user.getUid();
+                        }
+                    }
+                });
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
             return true;
         }
 
@@ -343,6 +374,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (success) {
                 if(mDriver){
                     Intent i = new Intent(getApplicationContext(), ReportLocationActivity.class);
+                    i.putExtra("driver", mEmail);
                     startActivity(i);
                 }
                 else

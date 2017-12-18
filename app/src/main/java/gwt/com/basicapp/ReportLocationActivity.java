@@ -17,17 +17,17 @@ import java.security.Permission;
 import static gwt.com.basicapp.PermissionControl.INITIAL_REQUEST;
 
 public class ReportLocationActivity extends PermissionControl {
-    private String mbusId;
+    private String driver;
 
     private void startService(){
         Intent intent = new Intent(this, ReportLocationService.class);
-        intent.putExtra("BUS_ID", mbusId);
+        intent.putExtra("driver", driver);
         this.startService(intent);
     }
 
     private void stopService() {
         Intent intent = new Intent(this, ReportLocationService.class);
-        intent.putExtra("BUS_ID", mbusId);
+        intent.putExtra("driver", driver);
         this.stopService(intent);
     }
 
@@ -38,7 +38,7 @@ public class ReportLocationActivity extends PermissionControl {
         checkPermission();
         setContentView(R.layout.activity_report_location);
 
-        mbusId = getIntent().getStringExtra("BUS_ID");
+        driver = getIntent().getStringExtra("driver");
 
 
         startService();
