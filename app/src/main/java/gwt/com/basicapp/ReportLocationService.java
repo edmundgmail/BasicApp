@@ -28,8 +28,6 @@ public class ReportLocationService extends Service {
     private static final int LOCATION_INTERVAL = 5000;
     private static final float LOCATION_DISTANCE = 0f;
     private String mBusId;
-    private String mDriver;
-    DatabaseReference locationRef;
 
     public ReportLocationService() {
     }
@@ -44,11 +42,7 @@ public class ReportLocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         Log.e(TAG, "onStartCommand");
-        if(mBusId == null){
-            mDriver = intent.getStringExtra("driver");
-        }
-
-
+        mBusId = intent.getStringExtra("busId");
         super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
@@ -111,7 +105,7 @@ public class ReportLocationService extends Service {
     {
         Location mLastLocation;
 
-        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("bus");
+        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("locations").child(mBusId);
 
         public LocationListener(String provider)
         {
@@ -125,8 +119,9 @@ public class ReportLocationService extends Service {
         {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
-            final DatabaseReference childRef = myRef;
-            childRef.child("location").setValue(location, new DatabaseReference.CompletionListener() {
+
+            SimpleLocation simpleLocation = new SimpleLocation(location.getLatitude(), location.getLongitude(), location.getBearing());
+            myRef.child("location").setValue(simpleLocation, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
                     if (databaseError != null) {

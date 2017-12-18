@@ -7,6 +7,11 @@
     android:layout_weight="1"
     tools:context="gwt.com.basicapp.ReportLocationActivity">
 
+    <Spinner
+        android:id="@+id/busSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <ToggleButton
         android:id="@+id/toggleButton"
         android:layout_width="fill_parent"
