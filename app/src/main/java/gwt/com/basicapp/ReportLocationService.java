@@ -41,9 +41,10 @@ public class ReportLocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        Log.e(TAG, "onStartCommand");
-        mBusId = intent.getStringExtra("busId");
         super.onStartCommand(intent, flags, startId);
+        mBusId = intent.getStringExtra("busId");
+
+        Log.e(TAG, "onStartCommand, mbusId = " + mBusId);
         return START_STICKY;
     }
 
@@ -105,7 +106,7 @@ public class ReportLocationService extends Service {
     {
         Location mLastLocation;
 
-        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("locations").child(mBusId);
+        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("locations");
 
         public LocationListener(String provider)
         {
@@ -120,8 +121,10 @@ public class ReportLocationService extends Service {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
 
+            Log.d(TAG, "mBusId = " + mBusId);
+
             SimpleLocation simpleLocation = new SimpleLocation(location.getLatitude(), location.getLongitude(), location.getBearing());
-            myRef.child("location").setValue(simpleLocation, new DatabaseReference.CompletionListener() {
+            myRef.child(mBusId).child("location").setValue(simpleLocation, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
                     if (databaseError != null) {

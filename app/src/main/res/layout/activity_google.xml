@@ -57,6 +57,15 @@
             android:visibility="visible"
             tools:visibility="gone" />
 
+        <CheckBox
+            android:id="@+id/chkDriver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chk_driver"
+            android:checked="false"
+            android:visibility="visible"
+            tools:visibility="gone"/>
+
         <LinearLayout
             android:id="@+id/sign_out_and_disconnect"
             android:layout_width="fill_parent"
@@ -84,12 +93,6 @@
                 android:text="@string/disconnect"
                 android:theme="@style/ThemeOverlay.MyDarkButton" />
 
-            <CheckBox
-                android:id="@+id/chkDriver"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/chk_driver"
-                android:checked="false" />
 
         </LinearLayout>
 

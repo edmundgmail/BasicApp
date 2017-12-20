@@ -142,13 +142,14 @@ public class GoogleSignInActivity extends AppCompatActivity implements
 
                             if(isDriver){
                                 Intent i = new Intent(getApplicationContext(), ReportLocationActivity.class);
-                                i.putExtra("email", user.getEmail());
+                                i.putExtra("userid", user.getUid());
+                                Log.d(TAG, "userid" + user.getUid());
                                 startActivity(i);
                             }
                             else
                             {
                                 Intent i = new Intent(getApplicationContext(), TrackLocationActivity.class);
-                                i.putExtra("email", user.getEmail());
+                                i.putExtra("userid", user.getUid());
                                 startActivity(i);
                             }
 
