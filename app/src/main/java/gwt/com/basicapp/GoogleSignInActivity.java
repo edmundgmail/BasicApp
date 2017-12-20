@@ -18,6 +18,7 @@ package gwt.com.basicapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
@@ -58,11 +59,15 @@ public class GoogleSignInActivity extends AppCompatActivity implements
     private TextView mStatusTextView;
     private TextView mDetailTextView;
     private CheckBox mDriverCheckBoxView;
+    private SharedPreferences.Editor mEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google);
+
+        SharedPreferences settings = getSharedPreferences("mysettings", 0);
+        mEditor = settings.edit();
 
         // Views
         mStatusTextView = findViewById(R.id.status);
@@ -73,6 +78,8 @@ public class GoogleSignInActivity extends AppCompatActivity implements
         findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.disconnect_button).setOnClickListener(this);
         mDriverCheckBoxView = (CheckBox) findViewById(R.id.chkDriver);
+        mDriverCheckBoxView.setChecked(settings.getBoolean("isDriver", false));
+
 
         // [START config_signin]
         // Configure Google Sign In
@@ -122,6 +129,28 @@ public class GoogleSignInActivity extends AppCompatActivity implements
     }
     // [END onactivityresult]
 
+
+    private void jumpToNext(FirebaseUser user) {
+
+
+        boolean isDriver = mDriverCheckBoxView.isChecked();
+        mEditor.putBoolean("isDriver", isDriver);
+        mEditor.commit();
+
+        if(isDriver){
+            Intent i = new Intent(getApplicationContext(), ReportLocationActivity.class);
+            i.putExtra("userid", user.getUid());
+            Log.d(TAG, "userid" + user.getUid());
+            startActivity(i);
+        }
+        else
+        {
+            Intent i = new Intent(getApplicationContext(), TrackLocationActivity.class);
+            i.putExtra("userid", user.getUid());
+            startActivity(i);
+        }
+    }
+
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
@@ -137,21 +166,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            boolean isDriver = mDriverCheckBoxView.isChecked();
-
-                            if(isDriver){
-                                Intent i = new Intent(getApplicationContext(), ReportLocationActivity.class);
-                                i.putExtra("userid", user.getUid());
-                                Log.d(TAG, "userid" + user.getUid());
-                                startActivity(i);
-                            }
-                            else
-                            {
-                                Intent i = new Intent(getApplicationContext(), TrackLocationActivity.class);
-                                i.putExtra("userid", user.getUid());
-                                startActivity(i);
-                            }
+                            jumpToNext(mAuth.getCurrentUser());
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -212,6 +227,9 @@ public class GoogleSignInActivity extends AppCompatActivity implements
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+
+            jumpToNext(user);
+
         } else {
             mStatusTextView.setText(R.string.signed_out);
             mDetailTextView.setText(null);
