@@ -15,16 +15,19 @@ public class TrackLocationService extends FirebaseMessagingService {
     private static final String TAG = "TrackLocationService";
 
      @Override
-     public void onCreate(){
-         FirebaseMessaging.getInstance().subscribeToTopic("bus");
+     public void onCreate()
+     {
+         String busId = "bus1234";
+         FirebaseMessaging.getInstance().subscribeToTopic(busId);
      }
 
-     private void sendMessage(double lat, double lon, float bear){
+
+    private void sendMessage(double lat, double lon, float bear){
          Intent intent = new Intent();
          intent.setAction("unique_name");
-         intent.putExtra("lat", lat);
-         intent.putExtra("lon", lon);
-         intent.putExtra("bear", bear);
+         intent.putExtra("latitude", lat);
+         intent.putExtra("longitude", lon);
+         intent.putExtra("bearing", bear);
          this.sendBroadcast(intent);
      }
 
@@ -33,9 +36,9 @@ public class TrackLocationService extends FirebaseMessagingService {
         try{
             Log.d(TAG, "message = " + remoteMessage.getNotification().getBody());
             JSONObject jObject = new JSONObject(remoteMessage.getNotification().getBody());
-            double lat = jObject.getDouble("lat");
-            double lon = jObject.getDouble("lon");
-            float bear = (float)jObject.getDouble("bear");
+            double lat = jObject.getDouble("latitude");
+            double lon = jObject.getDouble("longitude");
+            float bear = (float)jObject.getDouble("bearing");
 
             sendMessage(lat, lon,bear);
         }

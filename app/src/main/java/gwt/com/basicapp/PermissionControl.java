@@ -5,12 +5,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * Created by eguo on 12/12/17.
  */
 
-public abstract class PermissionControl extends FragmentActivity{
+public abstract class PermissionControl extends AppCompatActivity {
     public static final String[] INITIAL_PERMS={
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
             android.Manifest.permission.ACCESS_FINE_LOCATION

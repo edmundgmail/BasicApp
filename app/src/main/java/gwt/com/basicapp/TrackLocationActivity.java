@@ -21,6 +21,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -55,13 +56,13 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
 
 
     private void startService(){
-        Intent intent = new Intent(this, ReportLocationService.class);
+        Intent intent = new Intent(this, TrackLocationService.class);
         this.startService(intent);
         this.registerReceiver(mMessageReceiver, new IntentFilter("unique_name"));
     }
 
     private void stopService() {
-        Intent intent = new Intent(this, ReportLocationService.class);
+        Intent intent = new Intent(this, TrackLocationService.class);
         this.unregisterReceiver(mMessageReceiver);
         this.stopService(intent);
     }
@@ -70,9 +71,9 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            double lat = intent.getDoubleExtra("lat", 0);
-            double lon = intent.getDoubleExtra("lon", 0);
-            float bear = intent.getFloatExtra("bear", 0);
+            double lat = intent.getDoubleExtra("latitude", 0);
+            double lon = intent.getDoubleExtra("longitude", 0);
+            float bear = intent.getFloatExtra("bearing", 0);
 
             Log.d(TAG, "lat=" + lat + "lon=" + lon + "bear=" + bear);
             onLocationChanged(new SimpleLocation(lat, lon, bear));
@@ -82,7 +83,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_track_location);
+        setContentView(R.layout.activity_track_main);
 
         markerCount=0;
 
@@ -280,7 +281,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
 
             final LatLngInterpolator latLngInterpolator = new LatLngInterpolator.LinearFixed();
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-            valueAnimator.setDuration(1000); // duration 1 second
+            valueAnimator.setDuration(5000); // duration 1 second
             valueAnimator.setInterpolator(new LinearInterpolator());
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override public void onAnimationUpdate(ValueAnimator animation) {
