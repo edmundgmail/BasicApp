@@ -137,7 +137,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             mk= mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
                     //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
                     .icon(BitmapDescriptorFactory.fromBitmap((smallMarker))));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 16));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 15.5f));
 
             //Set Marker Count to 1 after first marker is created
             markerCount=1;
@@ -272,7 +272,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     }
 
 
-    public static void animateMarker(final SimpleLocation destination, final Marker marker) {
+    public void animateMarker(final SimpleLocation destination, final Marker marker) {
         if (marker != null) {
             final LatLng startPosition = marker.getPosition();
             final LatLng endPosition = new LatLng(destination.getLatitude(), destination.getLongitude());
@@ -289,7 +289,16 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
                         float v = animation.getAnimatedFraction();
                         LatLng newPosition = latLngInterpolator.interpolate(v, startPosition, endPosition);
                         marker.setPosition(newPosition);
-                        marker.setRotation(computeRotation(v, startRotation, destination.getBearing()));
+                        //marker.setRotation(computeRotation(v, startRotation, destination.getBearing()));
+                        marker.setRotation(getBearing(startPosition, newPosition));
+
+                        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newPosition, 15.5f));
+                        mMap.moveCamera(CameraUpdateFactory
+                                .newCameraPosition
+                                        (new CameraPosition.Builder()
+                                                .target(newPosition)
+                                                .zoom(15.5f)
+                                                .build()));
                     } catch (Exception ex) {
                         // I don't care atm..
                     }
@@ -299,6 +308,24 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             valueAnimator.start();
         }
     }
+
+
+
+    private static float getBearing(LatLng begin, LatLng end) {
+        double lat = Math.abs(begin.latitude - end.latitude);
+        double lng = Math.abs(begin.longitude - end.longitude);
+
+        if (begin.latitude < end.latitude && begin.longitude < end.longitude)
+            return (float) (Math.toDegrees(Math.atan(lng / lat)));
+        else if (begin.latitude >= end.latitude && begin.longitude < end.longitude)
+            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 90);
+        else if (begin.latitude >= end.latitude && begin.longitude >= end.longitude)
+            return (float) (Math.toDegrees(Math.atan(lng / lat)) + 180);
+        else if (begin.latitude < end.latitude && begin.longitude >= end.longitude)
+            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 270);
+        return -1;
+    }
+
 
     private static float computeRotation(float fraction, float start, float end) {
         float normalizeEnd = end - start; // rotate start to 0
