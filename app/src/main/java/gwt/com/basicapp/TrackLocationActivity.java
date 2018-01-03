@@ -6,29 +6,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.location.Location;
-import android.location.LocationListener;
-import android.os.Build;
-import android.os.Handler;
-import android.os.SystemClock;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -36,10 +25,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
 
 
 public class TrackLocationActivity extends PermissionControl implements OnMapReadyCallback,
@@ -126,17 +111,30 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
 
         else if (markerCount==0){
             //Set Custom BitMap for Pointer
-            int height = 80;
-            int width = 45;
-            BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.mipmap.icon_car);
-            Bitmap b = bitmapdraw.getBitmap();
-            Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+            int height = 128;
+            int width = 128;
+            BitmapDrawable bitmapSchoolbusDrawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.schoolbus);
+            Bitmap bitmapSchoolbus = bitmapSchoolbusDrawable.getBitmap();
+            Bitmap smallMarkerSchoolbus = Bitmap.createScaledBitmap(bitmapSchoolbus, width, height, false);
+
+
+            BitmapDrawable bitmapBusstopDrawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.busstop);
+            Bitmap bitmapBusstop = bitmapBusstopDrawable.getBitmap();
+            Bitmap smallMarkerBusstop = Bitmap.createScaledBitmap(bitmapBusstop, width, height, false);
+
             mMap = googleMap;
 
+
             LatLng latlong = new LatLng(lat, lon);
-            mk= mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
+
+            mk= mMap.addMarker(new MarkerOptions().position(latlong)
                     //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
-                    .icon(BitmapDescriptorFactory.fromBitmap((smallMarker))));
+                    .icon(BitmapDescriptorFactory.fromBitmap((smallMarkerBusstop))));
+
+
+            mk= mMap.addMarker(new MarkerOptions().position(latlong)
+                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
+                    .icon(BitmapDescriptorFactory.fromBitmap((smallMarkerSchoolbus))));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 15.5f));
 
             //Set Marker Count to 1 after first marker is created
