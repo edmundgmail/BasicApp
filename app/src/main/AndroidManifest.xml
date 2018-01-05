@@ -58,6 +58,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".MyPreferencesActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>
