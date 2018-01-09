@@ -2,6 +2,7 @@ package gwt.com.basicapp;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -17,8 +18,11 @@ public class TrackLocationService extends FirebaseMessagingService {
      @Override
      public void onCreate()
      {
-         String busId = "bus1234";
-         FirebaseMessaging.getInstance().subscribeToTopic(busId);
+         SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
+         String busId = sharedPreferences.getString("busId", "busId not found");
+         Log.i(TAG, "busId = " + busId);
+
+         FirebaseMessaging.getInstance().subscribeToTopic("bus1234");
      }
 
 

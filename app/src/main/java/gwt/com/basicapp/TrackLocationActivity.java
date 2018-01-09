@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -31,7 +32,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class TrackLocationActivity extends PermissionControl implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener,GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private static final int REQUEST_LOCATION = 0;
     private SimpleLocation mLastLocation;
@@ -41,6 +43,19 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     private GoogleMap mMap;
     private int markerCount;
 
+    private void restartService() {
+        stopService();
+        startService();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,String key)
+    {
+        Log.i(TAG, "onSharedPreferenceChanged, key=" + key + ",value=" + sharedPreferences.getString(key, "not found"));
+        if(key.equals("busId")){
+            restartService();
+        }
+    }
 
     private void startService(){
         Intent intent = new Intent(this, TrackLocationService.class);
