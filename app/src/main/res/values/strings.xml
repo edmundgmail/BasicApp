@@ -44,6 +44,8 @@
     <string name="toggle_turn_off">Stopped...Click to start reporting</string>
     <string name="title_activity_track_location">Map</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="choose_bus_prompt">Choose a bus</string>
+
 
     <!-- Strings related to Settings -->
 

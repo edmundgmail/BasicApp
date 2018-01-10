@@ -16,6 +16,17 @@ import android.util.Log;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -38,6 +49,23 @@ public class MyPreferencesActivity extends PreferenceActivity {
         }
         return mDelegate;
     }
+
+
+    public void setupSpinner(final List<String> buses) {
+
+        Spinner busTrackingSpinner = (Spinner) findViewById(R.id.busTrackingSpinner);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner,buses);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        busTrackingSpinner.setAdapter(dataAdapter);
+    }
+
+    private void populateSpinner(){
+                    List<String> buses = new ArrayList<>();
+                    buses.add("bus1234");
+                    buses.add("bus5678");
+                    setupSpinner(buses);
+    }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -63,6 +91,7 @@ public class MyPreferencesActivity extends PreferenceActivity {
         Log.i(TAG, "isDriver = " + s);
 
         setContentView(R.layout.activity_settings);
+        populateSpinner();
         //Toolbar toolBar = (Toolbar) findViewById(R.id.mp_toolbar);
         //setSupportActionBar(toolBar);
 
@@ -75,10 +104,12 @@ public class MyPreferencesActivity extends PreferenceActivity {
     public MenuInflater getMenuInflater() {
         return getDelegate().getMenuInflater();
     }
-    @Override
+
+    /*@Override
     public void setContentView(@LayoutRes int layoutResID) {
         getDelegate().setContentView(layoutResID);
     }
+
     @Override
     public void setContentView(View view) {
         getDelegate().setContentView(view);
@@ -91,6 +122,8 @@ public class MyPreferencesActivity extends PreferenceActivity {
     public void addContentView(View view, ViewGroup.LayoutParams params) {
         getDelegate().addContentView(view, params);
     }
+    */
+
     @Override
     protected void onPostResume() {
         super.onPostResume();

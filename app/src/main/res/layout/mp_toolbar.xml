@@ -7,19 +7,19 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/mp_toolbar"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:contentInsetEnd="0dp"
-        app:contentInsetLeft="72dp"
-        app:contentInsetRight="0dp"
-        app:contentInsetStart="72dp"
-        app:navigationIcon="?attr/homeAsUpIndicator"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        android:layout_height="4dp"
+        android:background="@drawable/toolbar_shadow" />
+
+    <TextView
+        android:id="@android:id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:ellipsize="marquee"
+        android:textColor="?android:textColorPrimary" />
 
 
 </LinearLayout>
