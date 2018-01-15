@@ -18,6 +18,7 @@ public class TrackLocationService extends FirebaseMessagingService {
      @Override
      public void onCreate()
      {
+
          SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
          String busId = sharedPreferences.getString("busId", "busId not found");
          Log.i(TAG, "busId = " + busId);

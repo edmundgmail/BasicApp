@@ -219,7 +219,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     @Override
     protected void onResume() {
         super.onResume();
-
+        Log.i(TAG, "onResume called");
         getServicesAvailable();
         startService();
 

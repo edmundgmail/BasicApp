@@ -14,8 +14,10 @@ import android.support.v7.widget.Toolbar;
 
 import android.util.Log;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -57,6 +59,7 @@ public class MyPreferencesActivity extends PreferenceActivity {
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner,buses);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         busTrackingSpinner.setAdapter(dataAdapter);
+        busTrackingSpinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
     }
 
     private void populateSpinner(){
@@ -75,6 +78,7 @@ public class MyPreferencesActivity extends PreferenceActivity {
     public ActionBar getSupportActionBar() {
         return getDelegate().getSupportActionBar();
     }
+
     public void setSupportActionBar(@Nullable Toolbar toolbar) {
         getDelegate().setSupportActionBar(toolbar);
     }
@@ -92,11 +96,21 @@ public class MyPreferencesActivity extends PreferenceActivity {
 
         setContentView(R.layout.activity_settings);
         populateSpinner();
-        //Toolbar toolBar = (Toolbar) findViewById(R.id.mp_toolbar);
-        //setSupportActionBar(toolBar);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            onBackPressed();  return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @NonNull
