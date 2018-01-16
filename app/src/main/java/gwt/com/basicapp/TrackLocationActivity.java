@@ -32,8 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class TrackLocationActivity extends PermissionControl implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener,GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        GoogleApiClient.OnConnectionFailedListener{
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private static final int REQUEST_LOCATION = 0;
     private SimpleLocation mLastLocation;
@@ -48,25 +47,16 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
         startService();
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,String key)
-    {
-        Log.i(TAG, "onSharedPreferenceChanged, key=" + key + ",value=" + sharedPreferences.getString(key, "not found"));
-        if(key.equals("busId")){
-            restartService();
-        }
-    }
-
-    private void startService(){
-        Intent intent = new Intent(this, TrackLocationService.class);
-        this.startService(intent);
-        this.registerReceiver(mMessageReceiver, new IntentFilter("unique_name"));
+    private void startService() {
+            Intent intent = new Intent(this, TrackLocationService.class);
+            this.startService(intent);
+            this.registerReceiver(mMessageReceiver, new IntentFilter("unique_name"));
     }
 
     private void stopService() {
-        Intent intent = new Intent(this, TrackLocationService.class);
-        this.unregisterReceiver(mMessageReceiver);
-        this.stopService(intent);
+            Intent intent = new Intent(this, TrackLocationService.class);
+            this.unregisterReceiver(mMessageReceiver);
+            this.stopService(intent);
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -106,7 +96,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_main);
-
+        Log.d(TAG, "onCreate called");
         markerCount=0;
 
         //Check If Google Services Is Available
@@ -132,8 +122,8 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        checkPermission();
-        startService();
+        //checkPermission();
+        //startService();
         //Uncomment To Show Google Location Blue Pointer
         // mMap.setMyLocationEnabled(true);
     }
@@ -212,11 +202,6 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
      * */
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "onResume called");
@@ -225,16 +210,11 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        stopService();
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
-        startService();
+        stopService();
     }
 
     //Method to display the location on UI

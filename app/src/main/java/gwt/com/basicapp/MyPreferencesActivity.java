@@ -44,6 +44,7 @@ import java.util.List;
 public class MyPreferencesActivity extends PreferenceActivity {
     private static final String TAG = "MyPreferencesActivity";
     private AppCompatDelegate mDelegate;
+    private SharedPreferences mSharedPreferences;
 
     private AppCompatDelegate getDelegate() {
         if (mDelegate == null) {
@@ -59,6 +60,7 @@ public class MyPreferencesActivity extends PreferenceActivity {
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner,buses);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         busTrackingSpinner.setAdapter(dataAdapter);
+        busTrackingSpinner.setSelection(1);
         busTrackingSpinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
     }
 
@@ -67,6 +69,7 @@ public class MyPreferencesActivity extends PreferenceActivity {
                     buses.add("bus1234");
                     buses.add("bus5678");
                     setupSpinner(buses);
+
     }
 
 
@@ -90,8 +93,8 @@ public class MyPreferencesActivity extends PreferenceActivity {
 
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
-        Boolean s = sharedPreferences.getBoolean("isDriver", true);
+        mSharedPreferences = getSharedPreferences("mysettings", 0);
+        Boolean s = mSharedPreferences.getBoolean("isDriver", true);
         Log.i(TAG, "isDriver = " + s);
 
         setContentView(R.layout.activity_settings);
