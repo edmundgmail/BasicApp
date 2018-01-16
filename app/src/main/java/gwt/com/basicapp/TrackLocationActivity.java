@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -40,7 +39,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     //private LocationRequest mLocationRequest;
     private static final String TAG = "";
     private GoogleMap mMap;
-    private int markerCount;
+    private int mMarkerCount;
 
     private void restartService() {
         stopService();
@@ -57,6 +56,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             Intent intent = new Intent(this, TrackLocationService.class);
             this.unregisterReceiver(mMessageReceiver);
             this.stopService(intent);
+            mMarkerCount = 0; //false a refresh
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -97,7 +97,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_main);
         Log.d(TAG, "onCreate called");
-        markerCount=0;
+        mMarkerCount =0;
 
         //Check If Google Services Is Available
         if (getServicesAvailable()) {
@@ -132,11 +132,11 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     // Add A Map Pointer To The MAp
     public void addMarker(GoogleMap googleMap, double lat, double lon) {
 
-        if(markerCount==1){
+        if(mMarkerCount ==1){
             animateMarker(mLastLocation,mk);
         }
 
-        else if (markerCount==0){
+        else if (mMarkerCount ==0){
             //Set Custom BitMap for Pointer
             int height = 128;
             int width = 128;
@@ -165,7 +165,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 15.5f));
 
             //Set Marker Count to 1 after first marker is created
-            markerCount=1;
+            mMarkerCount =1;
 
             checkPermission();
             //mMap.setMyLocationEnabled(true);
