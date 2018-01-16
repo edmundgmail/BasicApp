@@ -28,6 +28,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class TrackLocationActivity extends PermissionControl implements OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener,GoogleApiClient.ConnectionCallbacks,
@@ -40,6 +43,8 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     private static final String TAG = "";
     private GoogleMap mMap;
     private int mMarkerCount;
+
+    private Marker mMarker = null;
 
     private void restartService() {
         stopService();
@@ -120,50 +125,55 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     // After Creating the Map Set Initial Location
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         mMap = googleMap;
-        //checkPermission();
-        //startService();
-        //Uncomment To Show Google Location Blue Pointer
-        // mMap.setMyLocationEnabled(true);
     }
 
-    Marker mk = null;
+
+    private void generateBusStopMarker(List<LatLng> latlongs){
+        int height = 128;
+        int width = 128;
+
+        BitmapDrawable bitmapBusstopDrawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.busstop);
+        Bitmap bitmapBusstop = bitmapBusstopDrawable.getBitmap();
+        Bitmap smallMarkerBusstop = Bitmap.createScaledBitmap(bitmapBusstop, width, height, false);
+
+        for(LatLng latlong: latlongs){
+            mMap.addMarker(new MarkerOptions().position(latlong)
+                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
+                    .icon(BitmapDescriptorFactory.fromBitmap((smallMarkerBusstop))));
+        }
+
+    }
+
+    private void generateBusMarker(LatLng latlong) {
+        int height = 128;
+        int width = 128;
+        BitmapDrawable bitmapSchoolbusDrawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.schoolbus);
+        Bitmap bitmapSchoolbus = bitmapSchoolbusDrawable.getBitmap();
+        Bitmap smallMarkerSchoolbus = Bitmap.createScaledBitmap(bitmapSchoolbus, width, height, false);
+
+
+        mMarker = mMap.addMarker(new MarkerOptions().position(latlong)
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
+                .icon(BitmapDescriptorFactory.fromBitmap((smallMarkerSchoolbus))));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 15.5f));
+
+    }
+
     // Add A Map Pointer To The MAp
     public void addMarker(GoogleMap googleMap, double lat, double lon) {
 
-        if(mMarkerCount ==1){
-            animateMarker(mLastLocation,mk);
+        if(mMarkerCount>0){
+            animateMarker(mLastLocation, mMarker);
         }
-
-        else if (mMarkerCount ==0){
+        else{
             //Set Custom BitMap for Pointer
-            int height = 128;
-            int width = 128;
-            BitmapDrawable bitmapSchoolbusDrawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.schoolbus);
-            Bitmap bitmapSchoolbus = bitmapSchoolbusDrawable.getBitmap();
-            Bitmap smallMarkerSchoolbus = Bitmap.createScaledBitmap(bitmapSchoolbus, width, height, false);
-
-
-            BitmapDrawable bitmapBusstopDrawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.busstop);
-            Bitmap bitmapBusstop = bitmapBusstopDrawable.getBitmap();
-            Bitmap smallMarkerBusstop = Bitmap.createScaledBitmap(bitmapBusstop, width, height, false);
-
-            mMap = googleMap;
-
-
             LatLng latlong = new LatLng(lat, lon);
+            generateBusMarker(latlong);
 
-            mk= mMap.addMarker(new MarkerOptions().position(latlong)
-                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
-                    .icon(BitmapDescriptorFactory.fromBitmap((smallMarkerBusstop))));
-
-
-            mk= mMap.addMarker(new MarkerOptions().position(latlong)
-                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
-                    .icon(BitmapDescriptorFactory.fromBitmap((smallMarkerSchoolbus))));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 15.5f));
-
+            List<LatLng> latlongs = new ArrayList<>();
+            latlongs.add(latlong);
+            generateBusStopMarker(latlongs);
             //Set Marker Count to 1 after first marker is created
             mMarkerCount =1;
 
@@ -180,7 +190,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     }
 
 
-    public boolean getServicesAvailable() {
+    private boolean getServicesAvailable() {
         GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int isAvailable = api.isGooglePlayServicesAvailable(this);
         if (isAvailable == ConnectionResult.SUCCESS) {
@@ -275,7 +285,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     }
 
 
-    public void onLocationChanged(SimpleLocation location) {
+    private void onLocationChanged(SimpleLocation location) {
         // Assign the new location
         mLastLocation = location;
 
@@ -287,7 +297,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     }
 
 
-    public void animateMarker(final SimpleLocation destination, final Marker marker) {
+    private void animateMarker(final SimpleLocation destination, final Marker marker) {
         if (marker != null) {
             final LatLng startPosition = marker.getPosition();
             final LatLng endPosition = new LatLng(destination.getLatitude(), destination.getLongitude());
