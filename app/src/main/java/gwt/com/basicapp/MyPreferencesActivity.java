@@ -122,25 +122,6 @@ public class MyPreferencesActivity extends PreferenceActivity {
         return getDelegate().getMenuInflater();
     }
 
-    /*@Override
-    public void setContentView(@LayoutRes int layoutResID) {
-        getDelegate().setContentView(layoutResID);
-    }
-
-    @Override
-    public void setContentView(View view) {
-        getDelegate().setContentView(view);
-    }
-    @Override
-    public void setContentView(View view, ViewGroup.LayoutParams params) {
-        getDelegate().setContentView(view, params);
-    }
-    @Override
-    public void addContentView(View view, ViewGroup.LayoutParams params) {
-        getDelegate().addContentView(view, params);
-    }
-    */
-
     @Override
     protected void onPostResume() {
         super.onPostResume();

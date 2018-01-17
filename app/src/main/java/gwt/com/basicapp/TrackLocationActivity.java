@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class TrackLocationActivity extends PermissionControl implements OnMapReadyCallback,
@@ -37,7 +40,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
         GoogleApiClient.OnConnectionFailedListener{
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private static final int REQUEST_LOCATION = 0;
-    private SimpleLocation mLastLocation;
+    private SimpleGeoLocation mLastLocation;
     private boolean mRequestingLocationUpdates = false;
     //private LocationRequest mLocationRequest;
     private static final String TAG = "";
@@ -73,7 +76,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             float bear = intent.getFloatExtra("bearing", 0);
 
             Log.d(TAG, "lat=" + lat + "lon=" + lon + "bear=" + bear);
-            onLocationChanged(new SimpleLocation(lat, lon, bear));
+            onLocationChanged(new SimpleGeoLocation(lat, lon, bear));
         }
     };
 
@@ -129,10 +132,35 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     }
 
 
-    private void generateBusStopMarker(List<LatLng> latlongs){
+    private List<LatLng> getBusStops(){
+        SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
+        String busId = sharedPreferences.getString("busId", "");
+
+        List<LatLng> latlongs = new ArrayList<>();
+
+        if(!busId.isEmpty()){
+            String stops = sharedPreferences.getString(busId,"");
+            if(!stops.isEmpty()){
+                Matcher matcher = pattern.matcher(stops);
+                while(matcher.find()){
+                    double lat = Double.parseDouble(matcher.group(1));
+                    double lon = Double.parseDouble(matcher.group(2));
+
+                    latlongs.add(new LatLng(lat, lon));
+                }
+
+                return latlongs;
+            }
+        }
+
+        return null;
+    }
+
+    private void generateBusStopMarker(){
         int height = 128;
         int width = 128;
 
+        List<LatLng> latlongs = getBusStops();
         BitmapDrawable bitmapBusstopDrawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.busstop);
         Bitmap bitmapBusstop = bitmapBusstopDrawable.getBitmap();
         Bitmap smallMarkerBusstop = Bitmap.createScaledBitmap(bitmapBusstop, width, height, false);
@@ -171,9 +199,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             LatLng latlong = new LatLng(lat, lon);
             generateBusMarker(latlong);
 
-            List<LatLng> latlongs = new ArrayList<>();
-            latlongs.add(latlong);
-            generateBusStopMarker(latlongs);
+            generateBusStopMarker();
             //Set Marker Count to 1 after first marker is created
             mMarkerCount =1;
 
@@ -285,7 +311,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     }
 
 
-    private void onLocationChanged(SimpleLocation location) {
+    private void onLocationChanged(SimpleGeoLocation location) {
         // Assign the new location
         mLastLocation = location;
 
@@ -297,7 +323,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     }
 
 
-    private void animateMarker(final SimpleLocation destination, final Marker marker) {
+    private void animateMarker(final SimpleGeoLocation destination, final Marker marker) {
         if (marker != null) {
             final LatLng startPosition = marker.getPosition();
             final LatLng endPosition = new LatLng(destination.getLatitude(), destination.getLongitude());

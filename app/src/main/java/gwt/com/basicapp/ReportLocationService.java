@@ -1,26 +1,17 @@
 package gwt.com.basicapp;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
-
-import static gwt.com.basicapp.ReportLocationService.TAG;
 
 public class ReportLocationService extends Service {
     public static final String TAG = "REPORTLOCATIONSERVICE";
@@ -123,7 +114,7 @@ public class ReportLocationService extends Service {
 
             Log.d(TAG, "mBusId = " + mBusId);
 
-            SimpleLocation simpleLocation = new SimpleLocation(location.getLatitude(), location.getLongitude(), location.getBearing());
+            SimpleGeoLocation simpleLocation = new SimpleGeoLocation(location.getLatitude(), location.getLongitude(), location.getBearing());
             myRef.child(mBusId).child("location").setValue(simpleLocation, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference reference) {

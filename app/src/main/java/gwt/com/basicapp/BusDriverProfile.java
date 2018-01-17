@@ -6,7 +6,7 @@ import java.util.List;
  * Created by eguo on 12/18/17.
  */
 
-public class BusDriver {
+public class BusDriverProfile {
     private List<String> buses;
     private String email;
 

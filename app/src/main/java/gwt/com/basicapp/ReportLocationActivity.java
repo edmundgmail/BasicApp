@@ -1,18 +1,10 @@
 package gwt.com.basicapp;
 
-import android.Manifest;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
@@ -23,15 +15,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.Permission;
-import java.util.ArrayList;
 import java.util.List;
-
-import static gwt.com.basicapp.PermissionControl.INITIAL_REQUEST;
 
 public class ReportLocationActivity extends PermissionControl {
     private Spinner busSpinner;
-    private BusDriver busDriver;
+    private BusDriverProfile busDriver;
 
     private void showError(String msg) {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
@@ -81,7 +69,7 @@ public class ReportLocationActivity extends PermissionControl {
         driverProfile.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                busDriver = dataSnapshot.getValue(BusDriver.class);
+                busDriver = dataSnapshot.getValue(BusDriverProfile.class);
                 if(busDriver!=null && busDriver.getBuses() != null){
                     setupSpinner(busDriver.getBuses());
                 }
