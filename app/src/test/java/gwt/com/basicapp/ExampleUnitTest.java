@@ -14,4 +14,12 @@ public class ExampleUnitTest {
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
     }
+
+    @Test
+    public void regex_isCorrect() throws Exception{
+        String s = "{40.1,23.2}";
+        SimpleLocation expected = new SimpleLocation(40.1, 23.2);
+        SimpleLocation actual = SimpleLocation.fromString(s);
+        assertEquals(expected, actual);
+    }
 }

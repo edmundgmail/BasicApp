@@ -14,7 +14,7 @@ public class SimpleLocation {
     protected double longitude;
 
 
-    private static final String regex = "\\{\\s(\\d*[.]\\d)\\s,\\s(\\d*[.]\\d)\\s}";
+    private static final String regex = "\\{(([0-9]*[.])?[0-9]+),(([0-9]*[.])?[0-9]+)\\}";
     private static final Pattern pattern = Pattern.compile(regex);
 
     @Override
@@ -25,11 +25,13 @@ public class SimpleLocation {
                 "}";
     }
 
+
+
     public static SimpleLocation fromString(String s) {
         Matcher matcher = pattern.matcher(s);
         if(matcher.find()){
             double lat = Double.parseDouble(matcher.group(1));
-            double lon = Double.parseDouble(matcher.group(2));
+            double lon = Double.parseDouble(matcher.group(3));
 
             return new SimpleLocation(lat, lon);
         }

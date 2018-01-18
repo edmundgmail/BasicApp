@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -132,6 +133,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     }
 
 
+    @Nullable
     private List<LatLng> getBusStops(){
         SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
         String busId = sharedPreferences.getString("busId", "");
@@ -139,6 +141,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
         List<LatLng> latlongs = new ArrayList<>();
 
         if(!busId.isEmpty()){
+            /*
             String stops = sharedPreferences.getString(busId,"");
             if(!stops.isEmpty()){
                 Matcher matcher = pattern.matcher(stops);
@@ -150,7 +153,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
                 }
 
                 return latlongs;
-            }
+            }*/
         }
 
         return null;
