@@ -14,7 +14,7 @@ public class SimpleLocation {
     protected double longitude;
 
 
-    private static final String regex = "\\{(([0-9]*[.])?[0-9]+),(([0-9]*[.])?[0-9]+)\\}";
+    private static final String regex = "\\{\\s*(([0-9]*[.])?[0-9]+)\\s*,\\s*(([0-9]*[.])?[0-9]+)\\s*\\}";
     private static final Pattern pattern = Pattern.compile(regex);
 
     @Override
@@ -64,4 +64,25 @@ public class SimpleLocation {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleLocation that = (SimpleLocation) o;
+
+        if (Double.compare(that.latitude, latitude) != 0) return false;
+        return Double.compare(that.longitude, longitude) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(latitude);
+        result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(longitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }
