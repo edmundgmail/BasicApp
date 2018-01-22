@@ -1,6 +1,11 @@
 package gwt.com.basicapp;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -17,9 +22,25 @@ public class ExampleUnitTest {
 
     @Test
     public void regex_isCorrect() throws Exception{
+
         String s = "{40.1, 23.2}    ";
         SimpleLocation expected = new SimpleLocation(40.1, 23.2);
         SimpleLocation actual = SimpleLocation.fromString(s);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void regex_testArray() throws Exception{
+        String stops = "{40.0,-80.0}|{40.1234,-80.0}";
+        List<LatLng> latlongs = new ArrayList<>();
+
+        String []ss = stops.split("\\|");
+        for(String s : ss){
+            SimpleLocation l = SimpleLocation.fromString(s);
+            latlongs.add(new LatLng(l.getLatitude(), l.getLongitude()));
+        }
+
+        assertEquals(latlongs.get(0), new SimpleLocation(40.0, -80.0));
+        assertEquals(latlongs.get(1), new SimpleLocation(40.1234, -80.0));
     }
 }

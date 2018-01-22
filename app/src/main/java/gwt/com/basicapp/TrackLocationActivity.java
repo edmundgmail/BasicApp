@@ -137,23 +137,21 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     private List<LatLng> getBusStops(){
         SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
         String busId = sharedPreferences.getString("busId", "");
-
+        Log.i(TAG, "busId = " + busId);
         List<LatLng> latlongs = new ArrayList<>();
 
         if(!busId.isEmpty()){
-            /*
+
             String stops = sharedPreferences.getString(busId,"");
+            Log.i(TAG, "stops = " + stops);
             if(!stops.isEmpty()){
-                Matcher matcher = pattern.matcher(stops);
-                while(matcher.find()){
-                    double lat = Double.parseDouble(matcher.group(1));
-                    double lon = Double.parseDouble(matcher.group(2));
-
-                    latlongs.add(new LatLng(lat, lon));
+                String []ss = stops.split("|");
+                for(String s : ss){
+                    SimpleLocation l = SimpleLocation.fromString(s);
+                    latlongs.add(new LatLng(l.getLatitude(), l.getLongitude()));
                 }
-
                 return latlongs;
-            }*/
+            }
         }
 
         return null;
