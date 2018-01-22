@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.provider.ContactsContract;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -65,11 +66,25 @@ public class MyPreferencesActivity extends PreferenceActivity {
     }
 
     private void populateSpinner(){
-                    List<String> buses = new ArrayList<>();
-                    buses.add("bus1234");
-                    buses.add("bus5678");
-                    setupSpinner(buses);
+                    final List<String> buses = new ArrayList<>();
+                    final DatabaseReference busesProfile = FirebaseDatabase.getInstance().getReference("buses");
+                    final ValueEventListener busesDataListener = new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Iterable<DataSnapshot> snapShots = dataSnapshot.getChildren();
+                            for(DataSnapshot snapshot: snapShots){
+                                buses.add(snapshot.getValue(BusProfile.class).id);
+                            }
 
+                            setupSpinner(buses);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.e(TAG, databaseError.getMessage());
+                            Log.e(TAG,databaseError.getDetails());
+                        }
+                    };
     }
 
 

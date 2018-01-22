@@ -26,23 +26,6 @@ public class CustomOnItemSelectedListener implements OnItemSelectedListener {
 
 
         DatabaseReference busesProfile = FirebaseDatabase.getInstance().getReference("buses").child(selected);
-
-        /*
-        BusProfile busProfile = new BusProfile();
-        busProfile.id = selected;
-        busProfile.stops = new ArrayList<>();
-        busProfile.stops.add(new SimpleLocation(40.0,30.0));
-        busProfile.stops.add(new SimpleLocation(41, 31));
-        busesProfile.setValue(busProfile, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference reference) {
-                if (databaseError != null) {
-                    Log.e(TAG, "Failed to write message", databaseError.toException());
-                }
-            }
-
-        });*/
-
         busesProfile.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

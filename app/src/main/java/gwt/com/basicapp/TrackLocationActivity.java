@@ -145,7 +145,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             String stops = sharedPreferences.getString(busId,"");
             Log.i(TAG, "stops = " + stops);
             if(!stops.isEmpty()){
-                String []ss = stops.split("|");
+                String []ss = stops.split("\\|");
                 for(String s : ss){
                     SimpleLocation l = SimpleLocation.fromString(s);
                     latlongs.add(new LatLng(l.getLatitude(), l.getLongitude()));
