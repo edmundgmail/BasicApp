@@ -49,6 +49,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     private int mMarkerCount;
 
     private Marker mMarker = null;
+    private List<Marker> mMarkers = new ArrayList<>();
 
     private void restartService() {
         stopService();
@@ -168,9 +169,10 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
         Bitmap smallMarkerBusstop = Bitmap.createScaledBitmap(bitmapBusstop, width, height, false);
 
         for(LatLng latlong: latlongs){
-            mMap.addMarker(new MarkerOptions().position(latlong)
+            Marker marker = mMap.addMarker(new MarkerOptions().position(latlong)
                     //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
                     .icon(BitmapDescriptorFactory.fromBitmap((smallMarkerBusstop))));
+            mMarkers.add(marker);
         }
 
     }
@@ -182,10 +184,10 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
         Bitmap bitmapSchoolbus = bitmapSchoolbusDrawable.getBitmap();
         Bitmap smallMarkerSchoolbus = Bitmap.createScaledBitmap(bitmapSchoolbus, width, height, false);
 
-
         mMarker = mMap.addMarker(new MarkerOptions().position(latlong)
                 //.icon(BitmapDescriptorFactory.fromResource(R.drawable.pin3))
                 .icon(BitmapDescriptorFactory.fromBitmap((smallMarkerSchoolbus))));
+        mMarkers.add(mMarker);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 15.5f));
 
     }
@@ -197,6 +199,9 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             animateMarker(mLastLocation, mMarker);
         }
         else{
+            for(Marker marker:mMarkers) {
+                marker.remove();
+            }
             //Set Custom BitMap for Pointer
             LatLng latlong = new LatLng(lat, lon);
             generateBusMarker(latlong);
@@ -263,7 +268,10 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             if (mLastLocation != null) {
                 double latitude = mLastLocation.getLatitude();
                 double longitude = mLastLocation.getLongitude();
+
                 String loc = "" + latitude + " ," + longitude + " ";
+                Log.i(TAG, "loc = " + loc);
+
                 Toast.makeText(this,loc, Toast.LENGTH_SHORT).show();
 
                 //Add pointer to the map at location
