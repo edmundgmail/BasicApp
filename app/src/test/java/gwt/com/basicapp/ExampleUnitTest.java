@@ -31,7 +31,7 @@ public class ExampleUnitTest {
 
     @Test
     public void regex_testArray() throws Exception{
-        String stops = "{40.0,-80.0}|{40.1234,-80.0}";
+        String stops = "{40.1,-80.2}|{-40.4, -80.3}  ";
         List<LatLng> latlongs = new ArrayList<>();
 
         String []ss = stops.split("\\|");
@@ -40,7 +40,7 @@ public class ExampleUnitTest {
             latlongs.add(new LatLng(l.getLatitude(), l.getLongitude()));
         }
 
-        assertEquals(latlongs.get(0), new SimpleLocation(40.0, -80.0));
-        assertEquals(latlongs.get(1), new SimpleLocation(40.1234, -80.0));
+        assertEquals(latlongs.get(0), new LatLng(40.1, -80.2));
+        assertEquals(latlongs.get(1), new LatLng(-40.4, -80.3));
     }
 }

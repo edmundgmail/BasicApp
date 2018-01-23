@@ -30,8 +30,8 @@ public class CustomOnItemSelectedListener implements OnItemSelectedListener {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 BusProfile profile = dataSnapshot.getValue(BusProfile.class);
                 if(profile!=null){
-                    String stops = TextUtils.join("\\|", profile.stops);
-                    Log.d(TAG, "stops are " + stops);
+                    String stops = TextUtils.join("|", profile.stops);
+                    Log.d(TAG, "Getting cached stops for " + selected + " are " +  stops);
                     sharedPreferences.edit().putString(selected, stops).commit();
                 }
 

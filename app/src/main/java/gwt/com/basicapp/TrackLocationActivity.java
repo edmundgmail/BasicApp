@@ -138,7 +138,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     private List<LatLng> getBusStops(){
         SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
         String busId = sharedPreferences.getString("busId", "");
-        Log.i(TAG, "busId = " + busId);
+        Log.i(TAG, "now getting and cache stops for busId = " + busId);
         List<LatLng> latlongs = new ArrayList<>();
 
         if(!busId.isEmpty()){

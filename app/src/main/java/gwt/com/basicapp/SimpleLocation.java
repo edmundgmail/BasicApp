@@ -14,7 +14,7 @@ public class SimpleLocation {
     protected double longitude;
 
 
-    private static final String regex = "\\{\\s*(([0-9]*[.])?[0-9]+)\\s*,\\s*(([0-9]*[.])?[0-9]+)\\s*\\}";
+    private static final String regex = "\\{\\s*([+-]?([0-9]*[.])?[0-9]+)\\s*,\\s*([+-]?([0-9]*[.])?[0-9]+)\\s*\\}";
     private static final Pattern pattern = Pattern.compile(regex);
 
     @Override
