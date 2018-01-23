@@ -24,7 +24,6 @@ public class CustomOnItemSelectedListener implements OnItemSelectedListener {
         final String selected =  parent.getItemAtPosition(pos).toString();
         Log.d(TAG, "selected = " + selected);
 
-
         DatabaseReference busesProfile = FirebaseDatabase.getInstance().getReference("buses").child(selected);
         busesProfile.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

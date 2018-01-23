@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -56,35 +57,40 @@ public class MyPreferencesActivity extends PreferenceActivity {
 
 
     public void setupSpinner(final List<String> buses) {
-
         Spinner busTrackingSpinner = (Spinner) findViewById(R.id.busTrackingSpinner);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner,buses);
+
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         busTrackingSpinner.setAdapter(dataAdapter);
-        busTrackingSpinner.setSelection(1);
         busTrackingSpinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+
+        String spinnerValue = mSharedPreferences.getString("busId", "");
+        int i = buses.indexOf(spinnerValue);
+        if(i>=0)
+            busTrackingSpinner.setSelection(i);
     }
 
     private void populateSpinner(){
-                    final List<String> buses = new ArrayList<>();
-                    final DatabaseReference busesProfile = FirebaseDatabase.getInstance().getReference("buses");
-                    final ValueEventListener busesDataListener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Iterable<DataSnapshot> snapShots = dataSnapshot.getChildren();
-                            for(DataSnapshot snapshot: snapShots){
-                                buses.add(snapshot.getValue(BusProfile.class).id);
-                            }
+        final List<String> buses = new ArrayList<>();
+        final DatabaseReference busesProfile = FirebaseDatabase.getInstance().getReference("buses");
 
-                            setupSpinner(buses);
-                        }
+        busesProfile.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterable<DataSnapshot> snapShots = dataSnapshot.getChildren();
+                for(DataSnapshot snapshot: snapShots){
+                    buses.add(snapshot.getValue(BusProfile.class).id);
+                }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.e(TAG, databaseError.getMessage());
-                            Log.e(TAG,databaseError.getDetails());
-                        }
-                    };
+                setupSpinner(buses);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 
@@ -170,8 +176,7 @@ public class MyPreferencesActivity extends PreferenceActivity {
     @Override
     public void onStart() {
         super.onStart();
-        SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
-        Boolean s = sharedPreferences.getBoolean("isDriver", true);
+        Boolean s = mSharedPreferences.getBoolean("isDriver", true);
         Log.i(TAG, "isDriver1 = " + s);
 
     }

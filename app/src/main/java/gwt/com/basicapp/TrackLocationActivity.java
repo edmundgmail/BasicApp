@@ -130,6 +130,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
 
@@ -148,7 +149,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
                 String []ss = stops.split("\\|");
                 for(String s : ss){
                     SimpleLocation l = SimpleLocation.fromString(s);
-                    latlongs.add(new LatLng(l.getLatitude(), l.getLongitude()));
+                    if(l != null)latlongs.add(new LatLng(l.getLatitude(), l.getLongitude()));
                 }
                 return latlongs;
             }

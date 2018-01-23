@@ -23,7 +23,7 @@ public class TrackLocationService extends FirebaseMessagingService {
          String busId = sharedPreferences.getString("busId", "busId not found");
          Log.i(TAG, "busId = " + busId);
 
-         FirebaseMessaging.getInstance().subscribeToTopic("bus1234"); //TODO: fixme
+         FirebaseMessaging.getInstance().subscribeToTopic(busId);
      }
 
 
