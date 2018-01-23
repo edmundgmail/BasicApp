@@ -21,20 +21,23 @@ public class TrackLocationService extends FirebaseMessagingService {
      public void onCreate()
      {
 
+         if(mBusId!=null && !mBusId.equals("")) {
+             FirebaseMessaging.getInstance().unsubscribeFromTopic(mBusId);
+             Log.i(TAG, "unsubscribed to topic "+ mBusId);
+         }
+
          SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
          mBusId = sharedPreferences.getString("busId", "");
          Log.i(TAG, "busId = " + mBusId);
 
          FirebaseMessaging.getInstance().subscribeToTopic(mBusId);
+         Log.i(TAG, "subscribed to topic "+ mBusId);
      }
 
     @Override
     public void onDestroy() {
         Log.e(TAG, "onDestroy");
         super.onDestroy();
-        if(mBusId!=null && !mBusId.equals("")) {
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(mBusId);
-        }
 
     }
 

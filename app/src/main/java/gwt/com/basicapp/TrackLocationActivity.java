@@ -32,8 +32,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class TrackLocationActivity extends PermissionControl implements OnMapReadyCallback,
