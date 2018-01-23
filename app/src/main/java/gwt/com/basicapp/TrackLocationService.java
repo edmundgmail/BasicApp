@@ -14,18 +14,29 @@ import org.json.JSONObject;
 
 public class TrackLocationService extends FirebaseMessagingService {
     private static final String TAG = "TrackLocationService";
+    private static String mBusId = null;
+
 
      @Override
      public void onCreate()
      {
 
          SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
-         String busId = sharedPreferences.getString("busId", "busId not found");
-         Log.i(TAG, "busId = " + busId);
+         mBusId = sharedPreferences.getString("busId", "");
+         Log.i(TAG, "busId = " + mBusId);
 
-         FirebaseMessaging.getInstance().subscribeToTopic(busId);
+         FirebaseMessaging.getInstance().subscribeToTopic(mBusId);
      }
 
+    @Override
+    public void onDestroy() {
+        Log.e(TAG, "onDestroy");
+        super.onDestroy();
+        if(mBusId!=null && !mBusId.equals("")) {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(mBusId);
+        }
+
+    }
 
     private void sendMessage(double lat, double lon, float bear){
          Intent intent = new Intent();
