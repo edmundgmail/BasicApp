@@ -102,7 +102,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        //updateUI(currentUser);
     }
     // [END on_start_check_user]
 

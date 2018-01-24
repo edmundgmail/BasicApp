@@ -64,7 +64,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             Intent intent = new Intent(this, TrackLocationService.class);
             this.unregisterReceiver(mMessageReceiver);
             this.stopService(intent);
-            mMarkerCount = 0; //false a refresh
+            mMarkerCount = 0; //force a refresh
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -103,6 +103,8 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkPermission();
+
         setContentView(R.layout.activity_track_main);
         Log.d(TAG, "onCreate called");
         mMarkerCount =0;

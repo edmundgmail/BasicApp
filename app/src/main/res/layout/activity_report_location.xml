@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:textOn="@string/toggle_turn_on"
         android:textOff="@string/toggle_turn_off"
-        android:layout_height="48dp"
-        android:gravity="left|center_vertical"
+        android:layout_height="80dp"
+        android:gravity="center_vertical"
         android:textSize="20sp"
         android:paddingLeft="4dp"
         android:textIsSelectable="false"
@@ -24,9 +24,20 @@
     <Spinner
         android:id="@+id/busSpinner"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="60dp"
         android:gravity="left|center_vertical"
+        android:textSize="20sp"
         android:paddingLeft="4dp"
         android:textIsSelectable="false"/>
+
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="match_parent"
+        android:text="@string/logout"
+        android:layout_height="48dp"
+        android:gravity="left|center_vertical"
+        android:textSize="20sp"
+        android:paddingLeft="4dp"
+        android:textIsSelectable="false" />
 
 </LinearLayout>
