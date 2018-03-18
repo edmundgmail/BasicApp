@@ -22,7 +22,7 @@ public class CustomOnItemSelectedListener implements OnItemSelectedListener {
 
         final SharedPreferences sharedPreferences = parent.getContext().getSharedPreferences("mysettings", 0);
         final String selected =  parent.getItemAtPosition(pos).toString();
-        Log.d(TAG, "selected = " + selected);
+        gwt.com.basicapp.Log.d(TAG, "selected = " + selected);
 
         DatabaseReference busesProfile = FirebaseDatabase.getInstance().getReference("buses").child(selected);
         busesProfile.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -31,7 +31,7 @@ public class CustomOnItemSelectedListener implements OnItemSelectedListener {
                 BusProfile profile = dataSnapshot.getValue(BusProfile.class);
                 if(profile!=null){
                     String stops = TextUtils.join("|", profile.stops);
-                    Log.d(TAG, "Getting cached stops for " + selected + " are " +  stops);
+                    gwt.com.basicapp.Log.d(TAG, "Getting cached stops for " + selected + " are " +  stops);
                     sharedPreferences.edit().putString(selected, stops).commit();
                 }
 

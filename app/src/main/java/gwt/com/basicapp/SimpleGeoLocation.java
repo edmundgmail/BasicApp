@@ -9,6 +9,15 @@ import android.location.Location;
 public class SimpleGeoLocation extends  SimpleLocation {
     private float bearing;
 
+
+    public float getBearing() {
+        return bearing;
+    }
+
+    public void setBearing(float bearing) {
+        this.bearing = bearing;
+    }
+
     public SimpleGeoLocation(double latitude, double longitude, float bearing){
         this.latitude = latitude;
         this.longitude = longitude;

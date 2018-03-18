@@ -75,7 +75,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
             double lon = intent.getDoubleExtra("longitude", 0);
             float bear = intent.getFloatExtra("bearing", 0);
 
-            Log.d(TAG, "lat=" + lat + "lon=" + lon + "bear=" + bear);
+            gwt.com.basicapp.Log.d(TAG, "lat=" + lat + "lon=" + lon + "bear=" + bear);
             onLocationChanged(new SimpleGeoLocation(lat, lon, bear));
         }
     };
@@ -106,7 +106,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
         checkPermission();
 
         setContentView(R.layout.activity_track_main);
-        Log.d(TAG, "onCreate called");
+        gwt.com.basicapp.Log.d(TAG, "onCreate called");
         mMarkerCount =0;
 
         //Check If Google Services Is Available
@@ -139,13 +139,13 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     private List<LatLng> getBusStops(){
         SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
         String busId = sharedPreferences.getString("busId", "");
-        Log.i(TAG, "now getting and cache stops for busId = " + busId);
+        gwt.com.basicapp.Log.d(TAG, "now getting and cache stops for busId = " + busId);
         List<LatLng> latlongs = new ArrayList<>();
 
         if(!busId.isEmpty()){
 
             String stops = sharedPreferences.getString(busId,"");
-            Log.i(TAG, "stops = " + stops);
+            gwt.com.basicapp.Log.d(TAG, "stops = " + stops);
             if(!stops.isEmpty()){
                 String []ss = stops.split("\\|");
                 for(String s : ss){
@@ -178,8 +178,8 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     }
 
     private void generateBusMarker(LatLng latlong) {
-        int height = 128;
-        int width = 128;
+        int height = 64;
+        int width = 64;
         BitmapDrawable bitmapSchoolbusDrawable = (BitmapDrawable) getResources().getDrawable(R.mipmap.schoolbus);
         Bitmap bitmapSchoolbus = bitmapSchoolbusDrawable.getBitmap();
         Bitmap smallMarkerSchoolbus = Bitmap.createScaledBitmap(bitmapSchoolbus, width, height, false);
@@ -247,7 +247,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume called");
+        gwt.com.basicapp.Log.d(TAG, "onResume called");
         getServicesAvailable();
         startService();
 
@@ -270,7 +270,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
                 double longitude = mLastLocation.getLongitude();
 
                 String loc = "" + latitude + " ," + longitude + " ";
-                Log.i(TAG, "loc = " + loc);
+                gwt.com.basicapp.Log.d(TAG, "loc = " + loc);
 
                 Toast.makeText(this,loc, Toast.LENGTH_SHORT).show();
 
@@ -300,7 +300,7 @@ public class TrackLocationActivity extends PermissionControl implements OnMapRea
      */
     @Override
     public void onConnectionFailed(ConnectionResult result) {
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = "
+        gwt.com.basicapp.Log.d(TAG, "Connection failed: ConnectionResult.getErrorCode() = "
                 + result.getErrorCode());
     }
 

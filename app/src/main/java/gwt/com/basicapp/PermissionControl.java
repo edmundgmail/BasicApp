@@ -4,7 +4,9 @@ import android.*;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AppCompatActivity;
 
 /**
@@ -21,7 +23,14 @@ public abstract class PermissionControl extends AppCompatActivity {
 
     private boolean hasPermission(String perm)
     {
-        return(PackageManager.PERMISSION_GRANTED==checkSelfPermission(perm));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return (PackageManager.PERMISSION_GRANTED == checkSelfPermission(perm));
+        }
+        else
+        {
+            return PermissionChecker.checkSelfPermission(this.getApplicationContext(), perm) == PermissionChecker.PERMISSION_GRANTED;
+
+        }
     }
 
 
@@ -32,7 +41,9 @@ public abstract class PermissionControl extends AppCompatActivity {
 
     protected void checkPermission() {
         if (!canAccessLocation()) {
-            requestPermissions(PermissionControl.INITIAL_PERMS, INITIAL_REQUEST);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(PermissionControl.INITIAL_PERMS, INITIAL_REQUEST);
+            }
         }
     }
 

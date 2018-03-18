@@ -23,15 +23,18 @@ public class TrackLocationService extends FirebaseMessagingService {
 
          if(mBusId!=null && !mBusId.equals("")) {
              FirebaseMessaging.getInstance().unsubscribeFromTopic(mBusId);
-             Log.i(TAG, "unsubscribed to topic "+ mBusId);
+             gwt.com.basicapp.Log.d(TAG, "unsubscribed to topic "+ mBusId);
          }
 
          SharedPreferences sharedPreferences = getSharedPreferences("mysettings", 0);
          mBusId = sharedPreferences.getString("busId", "");
-         Log.i(TAG, "busId = " + mBusId);
+         gwt.com.basicapp.Log.d(TAG, "busId = " + mBusId);
 
-         FirebaseMessaging.getInstance().subscribeToTopic(mBusId);
-         Log.i(TAG, "subscribed to topic "+ mBusId);
+         if(mBusId != null && !mBusId.equals(""))
+         {
+             FirebaseMessaging.getInstance().subscribeToTopic(mBusId);
+             gwt.com.basicapp.Log.d(TAG, "subscribed to topic "+ mBusId);
+         }
      }
 
     @Override
@@ -53,7 +56,7 @@ public class TrackLocationService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         try{
-            Log.d(TAG, "message = " + remoteMessage.getNotification().getBody());
+            gwt.com.basicapp.Log.d(TAG, "message = " + remoteMessage.getNotification().getBody());
             JSONObject jObject = new JSONObject(remoteMessage.getNotification().getBody());
             double lat = jObject.getDouble("latitude");
             double lon = jObject.getDouble("longitude");

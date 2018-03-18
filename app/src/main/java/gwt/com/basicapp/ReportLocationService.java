@@ -55,18 +55,18 @@ public class ReportLocationService extends Service {
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListeners[1]);
         } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
+            gwt.com.basicapp.Log.d(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+            gwt.com.basicapp.Log.d(TAG, "network provider does not exist, " + ex.getMessage());
         }
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListeners[0]);
         } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
+            gwt.com.basicapp.Log.d(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
+            gwt.com.basicapp.Log.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
     }
 
@@ -80,7 +80,7 @@ public class ReportLocationService extends Service {
                 try {
                     mLocationManager.removeUpdates(mLocationListeners[i]);
                 } catch (Exception ex) {
-                    Log.i(TAG, "fail to remove location listners, ignore", ex);
+                    gwt.com.basicapp.Log.d(TAG, "fail to remove location listners, ignore", ex);
                 }
             }
         }
@@ -112,7 +112,7 @@ public class ReportLocationService extends Service {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
 
-            Log.d(TAG, "mBusId = " + mBusId);
+            gwt.com.basicapp.Log.d(TAG, "mBusId = " + mBusId);
 
             SimpleGeoLocation simpleLocation = new SimpleGeoLocation(location.getLatitude(), location.getLongitude(), location.getBearing());
             myRef.child(mBusId).child("location").setValue(simpleLocation, new DatabaseReference.CompletionListener() {

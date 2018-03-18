@@ -140,7 +140,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements
         if(isDriver){
             Intent i = new Intent(getApplicationContext(), ReportLocationActivity.class);
             i.putExtra("userid", user.getUid());
-            Log.d(TAG, "userid" + user.getUid());
+            gwt.com.basicapp.Log.d(TAG, "userid" + user.getUid());
             startActivity(i);
         }
         else
@@ -153,7 +153,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements
 
     // [START auth_with_google]
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        gwt.com.basicapp.Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         // [START_EXCLUDE silent]
         showProgressDialog();
         // [END_EXCLUDE]
@@ -165,7 +165,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
+                            gwt.com.basicapp.Log.d(TAG, "signInWithCredential:success");
                             jumpToNext(mAuth.getCurrentUser());
 
                         } else {
